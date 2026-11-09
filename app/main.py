@@ -1,15 +1,17 @@
-from fastapi import FastAPI, Depends
+import os
 
-from app.config import get_settings, Settings
-app = FastAPI()
+from fastapi import FastAPI
 
-# Depends(get_settings). Dependency
-# Depends variable depends on the result of get_settings. The value returned is then assigned to the settings parameter
-@app.get("/ping")
-async def pong(settings: Settings = Depends(get_settings)):
-    return {
-        "ping": "pong!",
-        "environment": settings.environment,
-        "testing": settings.testing
-    }
+from app.api import ping, summaries
+from app.db import init_db
+
+def create_application() -> FastAPI:
+    application = FastAPI()
+    application.include_router(ping.router)
+    application.include_router(summaries.router, prefix="/summaries", tags=["summaries"])  # new
+    return application
+
+app = create_application()
+init_db(app)
+
 
