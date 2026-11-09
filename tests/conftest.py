@@ -3,18 +3,18 @@
 import os
 
 import pytest
+
 # import starlette test client, which uses HTTPx to make requests against fastAPI api
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
+from app.config import Settings, get_settings
 from app.main import create_application
-from app.config import get_settings, Settings
+
 
 def get_settings_override():
-    return Settings(
-        testing=bool(1),
-        database_url=os.environ.get("DATABASE_TEST_URL")
-    )
+    return Settings(testing=bool(1), database_url=os.environ.get("DATABASE_TEST_URL"))
+
 
 @pytest.fixture(scope="module")
 def test_app():
@@ -24,6 +24,7 @@ def test_app():
     with TestClient(app) as test_client:
 
         yield test_client
+
 
 @pytest.fixture(scope="module")
 def test_app_with_db():
