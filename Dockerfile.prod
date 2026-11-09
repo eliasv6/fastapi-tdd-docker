@@ -5,7 +5,7 @@ FROM python:3.13.3-slim-bookworm
 RUN mkdir -p /home/app
 
 # create the app user
-RUN addgroup --sytem app && adduser --system --group app
+RUN addgroup --system app && adduser --system --group app
 
 # create the appropriate directories
 ENV HOME=/home/app
