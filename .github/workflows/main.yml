@@ -2,6 +2,10 @@ name: Continuous Integration and Delivery
 
 on: [push]
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')/summarizer
 
@@ -12,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: main
       - name: Log in to GitHub Packages
@@ -27,8 +31,8 @@ jobs:
           docker build \
             --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.IMAGE }}:latest \
-            --file ./project/Dockerfile.prod \
-            "./project"
+            --file ./Dockerfile.prod \
+            .
       - name: Push image
         run: |
           docker push ${{ env.IMAGE }}:latest
@@ -39,7 +43,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: main
       - name: Log in to GitHub Packages
@@ -54,8 +58,8 @@ jobs:
           docker build \
             --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.IMAGE }}:latest \
-            --file ./project/Dockerfile.prod \
-            "./project"
+            --file ./Dockerfile.prod \
+            .
       - name: Run container
         run: |
           docker run \
